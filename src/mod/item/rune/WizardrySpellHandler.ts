@@ -12,7 +12,7 @@ export class WizardrySpellHandler {
     private readonly player: EntityPlayer;
 
     /**
-     * If player has sucessfully casted a spell, this value is set
+     * If player has successfully cast a spell, this value is set
      */
     private currentSpell: ISpell | undefined;
 

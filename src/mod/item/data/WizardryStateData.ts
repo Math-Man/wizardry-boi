@@ -4,6 +4,7 @@ import {logError} from "isaacscript-common";
 import {DisableArrowKeys, EnableAllKeys} from "../../helper/ItemHelper";
 import {Flog} from "../../helper/CustomLogger";
 import {RuneSlot} from "../rune/RuneSlot";
+import {SpellParams} from "../spells/SpellParams";
 
 export class WizardryStateData {
 
@@ -49,7 +50,7 @@ export class WizardryStateData {
         return true;
     }
 
-    public castActiveSpell(): void {
+    public castActiveSpell(extraParams: unknown[]): void {
         const spell = this.runeHandler.getActiveSpell();
         if(!spell) {
             logError(`Tried to cast the current active spell but the spell is empty.`);
@@ -57,7 +58,11 @@ export class WizardryStateData {
         }
 
         // Cast the spell
-        spell.cast();
+        const params = {
+            player: this.player,
+            extraParams: extraParams
+        } as SpellParams
+        spell.cast(params);
 
         // Remove it
         this.runeHandler.setActiveSpell(undefined)
