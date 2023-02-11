@@ -2557,7 +2557,8 @@ local ISC_FEATURES = {
     ISCFeature.PLAYER_INVENTORY,
     ISCFeature.RUN_IN_N_FRAMES,
     ISCFeature.SAVE_DATA_MANAGER,
-    ISCFeature.SPAWN_COLLECTIBLE
+    ISCFeature.SPAWN_COLLECTIBLE,
+    ISCFeature.DISABLE_INPUTS
 }
 local CUSTOM_CALLBACKS_USED = {ModCallbackCustom.POST_PICKUP_COLLECT, ModCallbackCustom.POST_PLAYER_COLLECTIBLE_ADDED}
 local modVanilla = RegisterMod(____exports.MOD_NAME, 1)
@@ -57296,6 +57297,11 @@ local ____exports = {}
 ____exports.CollectibleTypeCustom = {WIZ_HERETICAL_GRIMOIRE = Isaac.GetItemIdByName("Heretical Grimoire")}
 return ____exports
  end,
+["mod.enum.ModConstants"] = function(...) 
+local ____exports = {}
+____exports.MOD_FEATURE = "WIZARDRY"
+return ____exports
+ end,
 ["mod.helper.ItemHelper"] = function(...) 
 local ____exports = {}
 local ____CustomLogger = require("mod.helper.CustomLogger")
@@ -57308,6 +57314,10 @@ local CollectibleTypeCustom = ____CustomItems.CollectibleTypeCustom
 local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
 local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
 local PickupVariant = ____isaac_2Dtypescript_2Ddefinitions.PickupVariant
+local ____Mod = require("Mod")
+local mod = ____Mod.mod
+local ____ModConstants = require("mod.enum.ModConstants")
+local MOD_FEATURE = ____ModConstants.MOD_FEATURE
 function ____exports.SpawnItemFirstFrame(self)
     if game:GetFrameCount() == 1 then
         Flog(
@@ -57333,6 +57343,20 @@ end
 function ____exports.GetWizardryItemActiveSlot(self, player)
     local slot = getActiveItemSlot(nil, player, CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE)
     return slot and slot or -1
+end
+function ____exports.DisableArrowKeys(self, player)
+    Flog(
+        nil,
+        "Disabling arrow keys for player " .. tostring(player.Index)
+    )
+    mod:disableShootingInputs(MOD_FEATURE)
+end
+function ____exports.EnableAllKeys(self, player)
+    Flog(
+        nil,
+        "Enabling all keys for player " .. tostring(player.Index)
+    )
+    mod:enableAllInputs(MOD_FEATURE)
 end
 return ____exports
  end,
@@ -57404,16 +57428,20 @@ function ____exports.GetWizardryStateData(self, player)
 end
 return ____exports
  end,
-["mod.item.behaviour.ActivateWizardryItem"] = function(...) 
+["mod.item.behaviour.WizardryItemActivationState"] = function(...) 
 local ____exports = {}
 local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
 local FlushPlayerStateData = ____WizardryStateDataCache.FlushPlayerStateData
 local GetWizardryStateData = ____WizardryStateDataCache.GetWizardryStateData
 local ____CustomLogger = require("mod.helper.CustomLogger")
 local Flog = ____CustomLogger.Flog
+local ____ItemHelper = require("mod.helper.ItemHelper")
+local DisableArrowKeys = ____ItemHelper.DisableArrowKeys
+local EnableAllKeys = ____ItemHelper.EnableAllKeys
 function ____exports.ActivateWizardryItem(self, player)
     local stateData = GetWizardryStateData(nil, player)
     stateData.active = true
+    DisableArrowKeys(nil, player)
     Flog(nil, "Activated item from wizardry!")
 end
 function ____exports.DeactivateWizardryItem(self, player)
@@ -57423,6 +57451,7 @@ function ____exports.DeactivateWizardryItem(self, player)
     end
     local stateData = GetWizardryStateData(nil, player)
     stateData.active = false
+    EnableAllKeys(nil, player)
     Flog(nil, "Deactivated item from wizardry!")
 end
 return ____exports
@@ -57457,9 +57486,9 @@ return ____exports
  end,
 ["mod.item.behaviour.PostUserWizardryItem"] = function(...) 
 local ____exports = {}
-local ____ActivateWizardryItem = require("mod.item.behaviour.ActivateWizardryItem")
-local ActivateWizardryItem = ____ActivateWizardryItem.ActivateWizardryItem
-local DeactivateWizardryItem = ____ActivateWizardryItem.DeactivateWizardryItem
+local ____WizardryItemActivationState = require("mod.item.behaviour.WizardryItemActivationState")
+local ActivateWizardryItem = ____WizardryItemActivationState.ActivateWizardryItem
+local DeactivateWizardryItem = ____WizardryItemActivationState.DeactivateWizardryItem
 local ____WizardryCastTimer = require("mod.item.behaviour.WizardryCastTimer")
 local WizardrySetCastTimer = ____WizardryCastTimer.WizardrySetCastTimer
 local ____RechargeWizardryItem = require("mod.item.behaviour.RechargeWizardryItem")
@@ -57548,6 +57577,26 @@ function ____exports.PostPlayerCollectibleAdded(self, mod)
 end
 return ____exports
  end,
+["mod.callback.CallbackPostPlayerCollectibleRemoved"] = function(...) 
+local ____exports = {}
+local main
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.dist.src.index")
+local ModCallbackCustom = ____isaacscript_2Dcommon.ModCallbackCustom
+local ____CustomItems = require("mod.enum.CustomItems")
+local CollectibleTypeCustom = ____CustomItems.CollectibleTypeCustom
+local ____WizardryItemActivationState = require("mod.item.behaviour.WizardryItemActivationState")
+local DeactivateWizardryItem = ____WizardryItemActivationState.DeactivateWizardryItem
+local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
+local FlushPlayerStateData = ____WizardryStateDataCache.FlushPlayerStateData
+function main(self, player, collectibleType)
+    DeactivateWizardryItem(nil, player)
+    FlushPlayerStateData(nil, player)
+end
+function ____exports.PostPlayerCollectibleRemoved(self, mod)
+    mod:AddCallbackCustom(ModCallbackCustom.POST_PLAYER_COLLECTIBLE_REMOVED, main, CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE)
+end
+return ____exports
+ end,
 ["main"] = function(...) 
 local ____exports = {}
 local main, registerCallbacks
@@ -57564,6 +57613,8 @@ local mod = ____Mod.mod
 local MOD_NAME = ____Mod.MOD_NAME
 local ____CallbackPostPlayerCollectibleAdded = require("mod.callback.CallbackPostPlayerCollectibleAdded")
 local PostPlayerCollectibleAdded = ____CallbackPostPlayerCollectibleAdded.PostPlayerCollectibleAdded
+local ____CallbackPostPlayerCollectibleRemoved = require("mod.callback.CallbackPostPlayerCollectibleRemoved")
+local PostPlayerCollectibleRemoved = ____CallbackPostPlayerCollectibleRemoved.PostPlayerCollectibleRemoved
 function main(self)
     registerCallbacks(nil, mod)
     Isaac.DebugString(MOD_NAME .. " initialized.")
@@ -57574,6 +57625,7 @@ function registerCallbacks(self, mod)
     PostRenderInit(nil, mod)
     PrePickupCollision(nil, mod)
     PostPlayerCollectibleAdded(nil, mod)
+    PostPlayerCollectibleRemoved(nil, mod)
 end
 main(nil)
 return ____exports

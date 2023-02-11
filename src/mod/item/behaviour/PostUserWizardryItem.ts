@@ -1,4 +1,4 @@
-import {ActivateWizardryItem, DeactivateWizardryItem} from "./ActivateWizardryItem";
+import {ActivateWizardryItem, DeactivateWizardryItem} from "./WizardryItemActivationState";
 import {WizardrySetCastTimer} from "./WizardryCastTimer";
 import {RechargeWizardryItem} from "./RechargeWizardryItem";
 

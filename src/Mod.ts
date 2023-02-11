@@ -8,6 +8,7 @@ const ISC_FEATURES = [
     ISCFeature.RUN_IN_N_FRAMES,
     ISCFeature.SAVE_DATA_MANAGER,
     ISCFeature.SPAWN_COLLECTIBLE,
+    ISCFeature.DISABLE_INPUTS,
 ] as const;
 
 const CUSTOM_CALLBACKS_USED = [

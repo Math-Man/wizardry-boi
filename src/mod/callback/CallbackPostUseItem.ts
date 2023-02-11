@@ -1,7 +1,7 @@
 import {ActiveSlot, CollectibleType, ModCallback, UseFlag} from "isaac-typescript-definitions";
 import {Flog} from "../helper/CustomLogger";
 import {WizardrySetCastTimer} from "../item/behaviour/WizardryCastTimer";
-import {ActivateWizardryItem, DeactivateWizardryItem} from "../item/behaviour/ActivateWizardryItem";
+import {ActivateWizardryItem, DeactivateWizardryItem} from "../item/behaviour/WizardryItemActivationState";
 import {RechargeWizardryItem} from "../item/behaviour/RechargeWizardryItem";
 import {PostUserWizardryItem} from "../item/behaviour/PostUserWizardryItem";
 import {CollectibleTypeCustom} from "../enum/CustomItems";

@@ -2,6 +2,9 @@ import {Flog} from "./CustomLogger";
 import {game, getActiveItemSlot} from "isaacscript-common";
 import {CollectibleTypeCustom} from "../enum/CustomItems";
 import {EntityType, PickupVariant} from "isaac-typescript-definitions";
+import {DisableInputs} from "isaacscript-common/dist/src/classes/features/other/DisableInputs";
+import {mod} from "../../Mod";
+import {MOD_FEATURE} from "../enum/ModConstants";
 
 export function SpawnItemFirstFrame() {
     if (game.GetFrameCount() === 1) {
@@ -21,4 +24,15 @@ export function PlayerHasWizardryItem(player: EntityPlayer): boolean {
 export function GetWizardryItemActiveSlot(player: EntityPlayer): number {
     const slot = getActiveItemSlot(player, CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE);
     return slot ? slot : -1;
+}
+
+
+export function DisableArrowKeys(player: EntityPlayer) {
+    Flog(`Disabling arrow keys for player ${player.Index}`)
+    mod.disableShootingInputs(MOD_FEATURE);
+}
+
+export function EnableAllKeys(player: EntityPlayer) {
+    Flog(`Enabling all keys for player ${player.Index}`)
+    mod.enableAllInputs(MOD_FEATURE);
 }
