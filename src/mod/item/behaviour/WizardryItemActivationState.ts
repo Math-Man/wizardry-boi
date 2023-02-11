@@ -1,21 +1,24 @@
 import {FlushPlayerStateData, GetWizardryStateData} from "../data/WizardryStateDataCache";
 import {Flog} from "../../helper/CustomLogger";
 import {DisableArrowKeys, EnableAllKeys} from "../../helper/ItemHelper";
+import {RuneSlot} from "../spells/RuneSlot";
 
-export function ActivateWizardryItem(player: EntityPlayer) : void {
+export function ActivateWizardryItemCasting(player: EntityPlayer) : void {
     const stateData = GetWizardryStateData(player);
-    stateData.active = true;
+    stateData.castingSpell = true;
     DisableArrowKeys(player)
-    Flog(`Activated item from wizardry!`);
+    Flog(`Started Casting spell!`);
 }
 
-export function DeactivateWizardryItem(player: EntityPlayer): void {
+export function DeactivateWizardryItemCasting(player: EntityPlayer): void {
+    // Player is gone?
     if(!player) {
         FlushPlayerStateData(player);
         return;
     }
     const stateData = GetWizardryStateData(player);
-    stateData.active = false;
+    stateData.castingSpell = false;
+    const runes = stateData.runeHandler.flushCurrentlyCastRunes();
     EnableAllKeys(player)
-    Flog(`Deactivated item from wizardry!`);
+    Flog(`Stopped casting spell! [${runes.map(value => RuneSlot[value]).join(",")}]`);
 }

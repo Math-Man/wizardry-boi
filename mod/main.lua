@@ -57271,18 +57271,6 @@ ____exports.CallbackPriority.LATE = 100
 ____exports.CallbackPriority[____exports.CallbackPriority.LATE] = "LATE"
 return ____exports
  end,
-["mod.callback.CallbackPostRender"] = function(...) 
-local ____exports = {}
-local main
-local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
-local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
-function main(self)
-end
-function ____exports.PostRenderInit(self, mod)
-    mod:AddCallback(ModCallback.POST_RENDER, main)
-end
-return ____exports
- end,
 ["mod.helper.CustomLogger"] = function(...) 
 local ____exports = {}
 local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.dist.src.index")
@@ -57360,6 +57348,247 @@ function ____exports.EnableAllKeys(self, player)
 end
 return ____exports
  end,
+["mod.item.spells.RuneSlot"] = function(...) 
+local ____exports = {}
+____exports.RuneSlot = {}
+____exports.RuneSlot.UP = 0
+____exports.RuneSlot[____exports.RuneSlot.UP] = "UP"
+____exports.RuneSlot.RIGHT = 1
+____exports.RuneSlot[____exports.RuneSlot.RIGHT] = "RIGHT"
+____exports.RuneSlot.DOWN = 2
+____exports.RuneSlot[____exports.RuneSlot.DOWN] = "DOWN"
+____exports.RuneSlot.LEFT = 3
+____exports.RuneSlot[____exports.RuneSlot.LEFT] = "LEFT"
+return ____exports
+ end,
+["mod.enum.CustomEntities"] = function(...) 
+local ____exports = {}
+____exports.CustomEntitiesEffects = {WIZ_HERETICAL_RUNE = Isaac.GetEntityVariantByName("Wizardry Heretical Rune")}
+return ____exports
+ end,
+["mod.item.rune.HereticalRuneEntity"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local __TS__Class = ____lualib.__TS__Class
+local ____exports = {}
+____exports.HereticalRuneEntity = __TS__Class()
+local HereticalRuneEntity = ____exports.HereticalRuneEntity
+HereticalRuneEntity.name = "HereticalRuneEntity"
+function HereticalRuneEntity.prototype.____constructor(self, gameEntity, castedBy, slot)
+    self.gameEntity = gameEntity
+    self.castedBy = castedBy
+    self.slotType = slot
+end
+function HereticalRuneEntity.prototype.getSlotType(self)
+    return self.slotType
+end
+function HereticalRuneEntity.prototype.getCaster(self)
+    return self.castedBy
+end
+function HereticalRuneEntity.prototype.getGameEntity(self)
+    return self.gameEntity
+end
+return ____exports
+ end,
+["mod.item.spells.WizardryRuneHandler"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local __TS__Class = ____lualib.__TS__Class
+local __TS__New = ____lualib.__TS__New
+local __TS__ArrayForEach = ____lualib.__TS__ArrayForEach
+local __TS__ArraySplice = ____lualib.__TS__ArraySplice
+local ____exports = {}
+local ____RuneSlot = require("mod.item.spells.RuneSlot")
+local RuneSlot = ____RuneSlot.RuneSlot
+local ____CustomLogger = require("mod.helper.CustomLogger")
+local Flog = ____CustomLogger.Flog
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
+local EntityType = ____isaac_2Dtypescript_2Ddefinitions.EntityType
+local ____CustomEntities = require("mod.enum.CustomEntities")
+local CustomEntitiesEffects = ____CustomEntities.CustomEntitiesEffects
+local ____HereticalRuneEntity = require("mod.item.rune.HereticalRuneEntity")
+local HereticalRuneEntity = ____HereticalRuneEntity.HereticalRuneEntity
+____exports.WizardryRuneHandler = __TS__Class()
+local WizardryRuneHandler = ____exports.WizardryRuneHandler
+WizardryRuneHandler.name = "WizardryRuneHandler"
+function WizardryRuneHandler.prototype.____constructor(self, player)
+    self.currentCastRunes = {}
+    self.currentCastRunesEntities = {}
+    self.player = player
+end
+function WizardryRuneHandler.prototype.CastRune(self, slotCast)
+    Flog(
+        nil,
+        (("Rune cast: " .. RuneSlot[slotCast]) .. " current: ") .. tostring(self.currentCastRunes)
+    )
+    local ____self_currentCastRunes_0 = self.currentCastRunes
+    ____self_currentCastRunes_0[#____self_currentCastRunes_0 + 1] = slotCast
+    local spawnedEntity = Isaac.Spawn(
+        EntityType.EFFECT,
+        CustomEntitiesEffects.WIZ_HERETICAL_RUNE,
+        0,
+        self.player.Position,
+        Vector(0, 0),
+        self.player
+    )
+    spawnedEntity:GetSprite():Play(
+        "rune" .. tostring(slotCast + 1),
+        true
+    )
+    local ____self_currentCastRunesEntities_1 = self.currentCastRunesEntities
+    ____self_currentCastRunesEntities_1[#____self_currentCastRunesEntities_1 + 1] = __TS__New(
+        HereticalRuneEntity,
+        spawnedEntity:ToEffect(),
+        self.player,
+        slotCast
+    )
+end
+function WizardryRuneHandler.prototype.getCurrentlyCastRuneEntities(self)
+    return self.currentCastRunesEntities
+end
+function WizardryRuneHandler.prototype.getCurrentlyCastRunes(self)
+    return self.currentCastRunes
+end
+function WizardryRuneHandler.prototype.flushCurrentlyCastRunes(self)
+    __TS__ArrayForEach(
+        self.currentCastRunesEntities,
+        function(____, runeEntity)
+            runeEntity:getGameEntity():Remove()
+        end
+    )
+    __TS__ArraySplice(self.currentCastRunesEntities, 0, #self.currentCastRunesEntities)
+    return __TS__ArraySplice(self.currentCastRunes, 0, #self.currentCastRunes)
+end
+return ____exports
+ end,
+["mod.item.data.WizardryStateData"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local __TS__Class = ____lualib.__TS__Class
+local ____exports = {}
+____exports.WizardryStateData = __TS__Class()
+local WizardryStateData = ____exports.WizardryStateData
+WizardryStateData.name = "WizardryStateData"
+function WizardryStateData.prototype.____constructor(self, runeHandler)
+    self.castingSpell = false
+    self.runeHandler = runeHandler
+end
+function WizardryStateData.prototype.ToString(self)
+    return tostring(self.castingSpell)
+end
+return ____exports
+ end,
+["mod.item.data.WizardryStateDataCache"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local Map = ____lualib.Map
+local __TS__New = ____lualib.__TS__New
+local ____exports = {}
+local ____WizardryStateData = require("mod.item.data.WizardryStateData")
+local WizardryStateData = ____WizardryStateData.WizardryStateData
+local ____WizardryRuneHandler = require("mod.item.spells.WizardryRuneHandler")
+local WizardryRuneHandler = ____WizardryRuneHandler.WizardryRuneHandler
+local stateData = __TS__New(Map)
+local function GetWizardryStateDataMap(self)
+    return stateData
+end
+function ____exports.FlushPlayerStateData(self, player)
+    stateData:delete(player.Index)
+end
+function ____exports.FlushAllStateData(self)
+    stateData:clear()
+end
+function ____exports.GetWizardryStateData(self, player)
+    local stateData = GetWizardryStateDataMap(nil):get(player.Index)
+    if stateData == nil then
+        stateData = __TS__New(
+            WizardryStateData,
+            __TS__New(WizardryRuneHandler, player)
+        )
+        GetWizardryStateDataMap(nil):set(player.Index, stateData)
+    end
+    return stateData
+end
+return ____exports
+ end,
+["mod.item.spells.WizardryHandleInput"] = function(...) 
+local ____exports = {}
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.dist.src.index")
+local getPlayers = ____isaacscript_2Dcommon.getPlayers
+local isActionTriggered = ____isaacscript_2Dcommon.isActionTriggered
+local ____ItemHelper = require("mod.helper.ItemHelper")
+local PlayerHasWizardryItem = ____ItemHelper.PlayerHasWizardryItem
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
+local ButtonAction = ____isaac_2Dtypescript_2Ddefinitions.ButtonAction
+local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
+local GetWizardryStateData = ____WizardryStateDataCache.GetWizardryStateData
+local ____RuneSlot = require("mod.item.spells.RuneSlot")
+local RuneSlot = ____RuneSlot.RuneSlot
+function ____exports.wizardryHandleInput(self)
+    local realPlayers = getPlayers(nil)
+    for ____, player in ipairs(realPlayers) do
+        if PlayerHasWizardryItem(nil, player) then
+            local playerStateData = GetWizardryStateData(nil, player)
+            if playerStateData.castingSpell then
+                if isActionTriggered(nil, player.ControllerIndex, ButtonAction.SHOOT_DOWN) then
+                    playerStateData.runeHandler:CastRune(RuneSlot.DOWN)
+                elseif isActionTriggered(nil, player.ControllerIndex, ButtonAction.SHOOT_LEFT) then
+                    playerStateData.runeHandler:CastRune(RuneSlot.LEFT)
+                elseif isActionTriggered(nil, player.ControllerIndex, ButtonAction.SHOOT_UP) then
+                    playerStateData.runeHandler:CastRune(RuneSlot.UP)
+                elseif isActionTriggered(nil, player.ControllerIndex, ButtonAction.SHOOT_RIGHT) then
+                    playerStateData.runeHandler:CastRune(RuneSlot.RIGHT)
+                end
+            end
+        end
+    end
+end
+return ____exports
+ end,
+["mod.item.behaviour.DrawWizardryRunes"] = function(...) 
+local ____exports = {}
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.dist.src.index")
+local getPlayers = ____isaacscript_2Dcommon.getPlayers
+local ____ItemHelper = require("mod.helper.ItemHelper")
+local PlayerHasWizardryItem = ____ItemHelper.PlayerHasWizardryItem
+local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
+local GetWizardryStateData = ____WizardryStateDataCache.GetWizardryStateData
+function ____exports.DrawWizardryRunes(self)
+    local realPlayers = getPlayers(nil)
+    for ____, player in ipairs(realPlayers) do
+        do
+            if not PlayerHasWizardryItem(nil, player) then
+                goto __continue3
+            end
+            local playerStateData = GetWizardryStateData(nil, player)
+            for ____, currentlyCastRuneEntity in ipairs(playerStateData.runeHandler:getCurrentlyCastRuneEntities()) do
+                local runeFrame = currentlyCastRuneEntity:getGameEntity().FrameCount
+                local runePosition = Vector(
+                    currentlyCastRuneEntity:getCaster().Position.X + math.sin(runeFrame % (360 * 2) / (math.pi * 2)) * 32,
+                    currentlyCastRuneEntity:getCaster().Position.Y - 16 + math.cos(runeFrame % (360 * 2) / (math.pi * 2)) * 32
+                )
+                currentlyCastRuneEntity:getGameEntity().Position = runePosition
+            end
+        end
+        ::__continue3::
+    end
+end
+return ____exports
+ end,
+["mod.callback.CallbackPostRender"] = function(...) 
+local ____exports = {}
+local main
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
+local ModCallback = ____isaac_2Dtypescript_2Ddefinitions.ModCallback
+local ____WizardryHandleInput = require("mod.item.spells.WizardryHandleInput")
+local wizardryHandleInput = ____WizardryHandleInput.wizardryHandleInput
+local ____DrawWizardryRunes = require("mod.item.behaviour.DrawWizardryRunes")
+local DrawWizardryRunes = ____DrawWizardryRunes.DrawWizardryRunes
+function main(self)
+    wizardryHandleInput(nil)
+    DrawWizardryRunes(nil)
+end
+function ____exports.PostRenderInit(self, mod)
+    mod:AddCallback(ModCallback.POST_RENDER, main)
+end
+return ____exports
+ end,
 ["mod.callback.CallbackPostPerfectUpdate"] = function(...) 
 local ____exports = {}
 local main
@@ -57386,49 +57615,9 @@ function ____exports.WizardrySetCastTimer(self, player, castTimeSeconds, func)
 end
 return ____exports
  end,
-["mod.item.data.WizardryStateData"] = function(...) 
-local ____lualib = require("lualib_bundle")
-local __TS__Class = ____lualib.__TS__Class
-local ____exports = {}
-____exports.WizardryStateData = __TS__Class()
-local WizardryStateData = ____exports.WizardryStateData
-WizardryStateData.name = "WizardryStateData"
-function WizardryStateData.prototype.____constructor(self)
-    self.active = false
-end
-function WizardryStateData.prototype.ToString(self)
-    return tostring(self.active)
-end
-return ____exports
- end,
-["mod.item.data.WizardryStateDataCache"] = function(...) 
-local ____lualib = require("lualib_bundle")
-local Map = ____lualib.Map
-local __TS__New = ____lualib.__TS__New
-local ____exports = {}
-local ____WizardryStateData = require("mod.item.data.WizardryStateData")
-local WizardryStateData = ____WizardryStateData.WizardryStateData
-local stateData = __TS__New(Map)
-local function GetWizardryStateDataMap(self)
-    return stateData
-end
-function ____exports.FlushPlayerStateData(self, player)
-    stateData:delete(player.Index)
-end
-function ____exports.FlushAllStateData(self)
-    stateData:clear()
-end
-function ____exports.GetWizardryStateData(self, player)
-    local stateData = GetWizardryStateDataMap(nil):get(player.Index)
-    if stateData == nil then
-        stateData = __TS__New(WizardryStateData)
-        GetWizardryStateDataMap(nil):set(player.Index, stateData)
-    end
-    return stateData
-end
-return ____exports
- end,
 ["mod.item.behaviour.WizardryItemActivationState"] = function(...) 
+local ____lualib = require("lualib_bundle")
+local __TS__ArrayMap = ____lualib.__TS__ArrayMap
 local ____exports = {}
 local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
 local FlushPlayerStateData = ____WizardryStateDataCache.FlushPlayerStateData
@@ -57438,21 +57627,33 @@ local Flog = ____CustomLogger.Flog
 local ____ItemHelper = require("mod.helper.ItemHelper")
 local DisableArrowKeys = ____ItemHelper.DisableArrowKeys
 local EnableAllKeys = ____ItemHelper.EnableAllKeys
-function ____exports.ActivateWizardryItem(self, player)
+local ____RuneSlot = require("mod.item.spells.RuneSlot")
+local RuneSlot = ____RuneSlot.RuneSlot
+function ____exports.ActivateWizardryItemCasting(self, player)
     local stateData = GetWizardryStateData(nil, player)
-    stateData.active = true
+    stateData.castingSpell = true
     DisableArrowKeys(nil, player)
-    Flog(nil, "Activated item from wizardry!")
+    Flog(nil, "Started Casting spell!")
 end
-function ____exports.DeactivateWizardryItem(self, player)
+function ____exports.DeactivateWizardryItemCasting(self, player)
     if not player then
         FlushPlayerStateData(nil, player)
         return
     end
     local stateData = GetWizardryStateData(nil, player)
-    stateData.active = false
+    stateData.castingSpell = false
+    local runes = stateData.runeHandler:flushCurrentlyCastRunes()
     EnableAllKeys(nil, player)
-    Flog(nil, "Deactivated item from wizardry!")
+    Flog(
+        nil,
+        ("Stopped casting spell! [" .. table.concat(
+            __TS__ArrayMap(
+                runes,
+                function(____, value) return RuneSlot[value] end
+            ),
+            ","
+        )) .. "]"
+    )
 end
 return ____exports
  end,
@@ -57487,20 +57688,20 @@ return ____exports
 ["mod.item.behaviour.PostUserWizardryItem"] = function(...) 
 local ____exports = {}
 local ____WizardryItemActivationState = require("mod.item.behaviour.WizardryItemActivationState")
-local ActivateWizardryItem = ____WizardryItemActivationState.ActivateWizardryItem
-local DeactivateWizardryItem = ____WizardryItemActivationState.DeactivateWizardryItem
+local ActivateWizardryItemCasting = ____WizardryItemActivationState.ActivateWizardryItemCasting
+local DeactivateWizardryItemCasting = ____WizardryItemActivationState.DeactivateWizardryItemCasting
 local ____WizardryCastTimer = require("mod.item.behaviour.WizardryCastTimer")
 local WizardrySetCastTimer = ____WizardryCastTimer.WizardrySetCastTimer
 local ____RechargeWizardryItem = require("mod.item.behaviour.RechargeWizardryItem")
 local RechargeWizardryItem = ____RechargeWizardryItem.RechargeWizardryItem
 function ____exports.PostUserWizardryItem(self, player)
-    ActivateWizardryItem(nil, player)
+    ActivateWizardryItemCasting(nil, player)
     WizardrySetCastTimer(
         nil,
         player,
         4,
         function()
-            DeactivateWizardryItem(nil, player)
+            DeactivateWizardryItemCasting(nil, player)
             RechargeWizardryItem(nil, player)
         end
     )
@@ -57585,15 +57786,36 @@ local ModCallbackCustom = ____isaacscript_2Dcommon.ModCallbackCustom
 local ____CustomItems = require("mod.enum.CustomItems")
 local CollectibleTypeCustom = ____CustomItems.CollectibleTypeCustom
 local ____WizardryItemActivationState = require("mod.item.behaviour.WizardryItemActivationState")
-local DeactivateWizardryItem = ____WizardryItemActivationState.DeactivateWizardryItem
+local DeactivateWizardryItemCasting = ____WizardryItemActivationState.DeactivateWizardryItemCasting
 local ____WizardryStateDataCache = require("mod.item.data.WizardryStateDataCache")
 local FlushPlayerStateData = ____WizardryStateDataCache.FlushPlayerStateData
 function main(self, player, collectibleType)
-    DeactivateWizardryItem(nil, player)
+    DeactivateWizardryItemCasting(nil, player)
     FlushPlayerStateData(nil, player)
 end
 function ____exports.PostPlayerCollectibleRemoved(self, mod)
     mod:AddCallbackCustom(ModCallbackCustom.POST_PLAYER_COLLECTIBLE_REMOVED, main, CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE)
+end
+return ____exports
+ end,
+["mod.callback.CallbackInputActionPlayer"] = function(...) 
+local ____exports = {}
+local main
+local ____isaacscript_2Dcommon = require("lua_modules.isaacscript-common.dist.src.index")
+local ModCallbackCustom = ____isaacscript_2Dcommon.ModCallbackCustom
+local SHOOTING_ACTIONS_SET = ____isaacscript_2Dcommon.SHOOTING_ACTIONS_SET
+local ____isaac_2Dtypescript_2Ddefinitions = require("lua_modules.isaac-typescript-definitions.dist.src.index")
+local InputHook = ____isaac_2Dtypescript_2Ddefinitions.InputHook
+local ____CustomLogger = require("mod.helper.CustomLogger")
+local Flog = ____CustomLogger.Flog
+function main(self, player, inputHook, buttonAction)
+    if SHOOTING_ACTIONS_SET:has(buttonAction) and inputHook == InputHook.GET_ACTION_VALUE then
+        Flog(nil, "LOOK MAMA I AM SHOOTING!")
+    end
+    return nil
+end
+function ____exports.PostPlayerInputAction(self, mod)
+    mod:AddCallbackCustom(ModCallbackCustom.INPUT_ACTION_PLAYER, main)
 end
 return ____exports
  end,

@@ -1,11 +1,15 @@
-export class WizardryStateData {
-    public active : boolean;
+import {WizardryRuneHandler} from "../spells/WizardryRuneHandler";
 
-    public constructor() {
-        this.active = false;
+export class WizardryStateData {
+    public castingSpell: boolean;
+    public runeHandler: WizardryRuneHandler;
+
+    public constructor(runeHandler: WizardryRuneHandler) {
+        this.castingSpell = false;
+        this.runeHandler = runeHandler;
     }
 
     public ToString(): string {
-        return `${this.active}`
+        return `${this.castingSpell}`
     }
 }

@@ -1,0 +1,6 @@
+<entities anm2root="gfx/animation/runes/" version="5">
+    <entity anm2path="runes.anm2" baseHp="0" boss="0" champion="0" collisionDamage="0" collisionMass="0"
+    collisionRadius="0" friction="0" id="1000" name="Wizardry Heretical Rune" numGridColiisionPoints="0" shadowSize="0" stageHp="0">
+        <gibs amount="0" blood="0" bone="0" eye="0" gut="0" large="0"/>
+    </entity>
+</entities>

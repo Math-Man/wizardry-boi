@@ -1,4 +1,5 @@
 import {WizardryStateData} from "./WizardryStateData";
+import {WizardryRuneHandler} from "../spells/WizardryRuneHandler";
 
 const stateData = new Map<int, WizardryStateData>();
 
@@ -19,7 +20,7 @@ export function GetWizardryStateData(player: EntityPlayer): WizardryStateData {
 
     // Data doesn't exist, add it.
     if (stateData === undefined) {
-        stateData = new WizardryStateData();
+        stateData = new WizardryStateData(new WizardryRuneHandler(player));
         GetWizardryStateDataMap().set(player.Index, stateData)
     }
     return stateData;

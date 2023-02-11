@@ -1,12 +1,12 @@
-import {ActivateWizardryItem, DeactivateWizardryItem} from "./WizardryItemActivationState";
+import {ActivateWizardryItemCasting, DeactivateWizardryItemCasting} from "./WizardryItemActivationState";
 import {WizardrySetCastTimer} from "./WizardryCastTimer";
 import {RechargeWizardryItem} from "./RechargeWizardryItem";
 
 export function PostUserWizardryItem(player: EntityPlayer): void {
-    ActivateWizardryItem(player)
+    ActivateWizardryItemCasting(player)
 
     WizardrySetCastTimer(player, 4, () => {
-        DeactivateWizardryItem(player);
+        DeactivateWizardryItemCasting(player);
         RechargeWizardryItem(player)
     });
 

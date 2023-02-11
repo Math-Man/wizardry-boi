@@ -1,8 +1,7 @@
 import {ModCallbackCustom, ModUpgraded} from "isaacscript-common";
 import {CollectibleType} from "isaac-typescript-definitions";
 import {CollectibleTypeCustom} from "../enum/CustomItems";
-import {RechargeWizardryItem} from "../item/behaviour/RechargeWizardryItem";
-import {DeactivateWizardryItem} from "../item/behaviour/WizardryItemActivationState";
+import {DeactivateWizardryItemCasting} from "../item/behaviour/WizardryItemActivationState";
 import {FlushPlayerStateData} from "../item/data/WizardryStateDataCache";
 
 export function PostPlayerCollectibleRemoved(mod: ModUpgraded): void {
@@ -13,6 +12,6 @@ function main(player: EntityPlayer, collectibleType: CollectibleType) {
     /**
      * Charge the item on pickup.
      */
-    DeactivateWizardryItem(player);
+    DeactivateWizardryItemCasting(player);
     FlushPlayerStateData(player);
 }
