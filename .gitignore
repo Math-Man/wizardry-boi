@@ -6,6 +6,8 @@
 .DS_Store
 thumbs.db
 
+# The transpiled Lua output
+mod/main.lua
 
 # ------------------------------
 # GitHub Node.gitignore template
