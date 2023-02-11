@@ -1,7 +1,7 @@
 import {FlushPlayerStateData, GetWizardryStateData} from "../data/WizardryStateDataCache";
 import {Flog} from "../../helper/CustomLogger";
 import {DisableArrowKeys, EnableAllKeys} from "../../helper/ItemHelper";
-import {RuneSlot} from "../spells/RuneSlot";
+import {RuneSlot} from "../rune/RuneSlot";
 
 export function ActivateWizardryItemCasting(player: EntityPlayer) : void {
     const stateData = GetWizardryStateData(player);

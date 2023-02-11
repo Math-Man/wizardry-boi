@@ -2,7 +2,7 @@ import {RuneSlot} from "./RuneSlot";
 import {Flog} from "../../helper/CustomLogger";
 import {EntityType} from "isaac-typescript-definitions";
 import {CustomEntitiesEffects} from "../../enum/CustomEntities";
-import {HereticalRuneEntity} from "../rune/HereticalRuneEntity";
+import {HereticalRuneEntity} from "./HereticalRuneEntity";
 
 export class WizardryRuneHandler {
 

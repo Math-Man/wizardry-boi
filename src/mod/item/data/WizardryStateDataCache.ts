@@ -1,5 +1,5 @@
 import {WizardryStateData} from "./WizardryStateData";
-import {WizardryRuneHandler} from "../spells/WizardryRuneHandler";
+import {WizardryRuneHandler} from "../rune/WizardryRuneHandler";
 
 const stateData = new Map<int, WizardryStateData>();
 

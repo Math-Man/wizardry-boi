@@ -1,4 +1,4 @@
-import {RuneSlot} from "../spells/RuneSlot";
+import {RuneSlot} from "./RuneSlot";
 
 export class HereticalRuneEntity {
 

@@ -1,4 +1,4 @@
-import {WizardryRuneHandler} from "../spells/WizardryRuneHandler";
+import {WizardryRuneHandler} from "../rune/WizardryRuneHandler";
 
 export class WizardryStateData {
     public castingSpell: boolean;
