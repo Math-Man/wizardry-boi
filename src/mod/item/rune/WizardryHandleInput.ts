@@ -1,7 +1,6 @@
 import {getPlayers, isActionTriggered} from "isaacscript-common";
 import {PlayerHasWizardryItem} from "../../helper/ItemHelper";
 import {ButtonAction} from "isaac-typescript-definitions";
-import {Flog} from "../../helper/CustomLogger";
 import {GetWizardryStateData} from "../data/WizardryStateDataCache";
 import {RuneSlot} from "./RuneSlot";
 

@@ -3,18 +3,34 @@ import {Flog} from "../../helper/CustomLogger";
 import {EntityType} from "isaac-typescript-definitions";
 import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
+import {ISpell} from "../spells/ISpell";
 
-export class WizardryRuneHandler {
+export class WizardrySpellHandler {
 
     private readonly currentCastRunes : Array<RuneSlot>;
     private readonly currentCastRunesEntities : Array<HereticalRuneEntity>;
     private readonly player: EntityPlayer;
+
+    /**
+     * If player has sucessfully casted a spell, this value is set
+     */
+    private currentSpell: ISpell | undefined;
 
     public constructor(player: EntityPlayer) {
         this.currentCastRunes = [];
         this.currentCastRunesEntities = [];
         this.player = player
     }
+
+
+    public getActiveSpell(): ISpell | undefined {
+        return this.currentSpell;
+    }
+
+    public setActiveSpell(spell: ISpell | undefined): void {
+        this.currentSpell = spell;
+    }
+
 
     public CastRune(slotCast: RuneSlot): void {
         Flog(`Rune cast: ${RuneSlot[slotCast]} current: ${this.currentCastRunes}`)

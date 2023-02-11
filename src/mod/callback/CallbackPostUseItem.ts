@@ -1,9 +1,6 @@
 import {ActiveSlot, CollectibleType, ModCallback, UseFlag} from "isaac-typescript-definitions";
 import {Flog} from "../helper/CustomLogger";
-import {WizardrySetCastTimer} from "../item/behaviour/WizardryCastTimer";
-import {ActivateWizardryItemCasting, DeactivateWizardryItemCasting} from "../item/behaviour/WizardryItemActivationState";
-import {RechargeWizardryItem} from "../item/behaviour/RechargeWizardryItem";
-import {PostUserWizardryItem} from "../item/behaviour/PostUserWizardryItem";
+import {PostUseWizardryItem} from "../item/behaviour/PostUseWizardryItem";
 import {CollectibleTypeCustom} from "../enum/CustomItems";
 import {ModUpgraded} from "isaacscript-common";
 
@@ -16,7 +13,7 @@ function main(collectibleType: CollectibleType, rng : RNG, player: EntityPlayer,
 
     if(collectibleType === CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE) {
         Flog(`POST: ${collectibleType}, ${rng}, ${player}, ${userFlags}, ${activeSlot}, ${customData}`)
-        PostUserWizardryItem(player);
+        PostUseWizardryItem(player);
     }
 
     return undefined;
