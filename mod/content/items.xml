@@ -1,0 +1,3 @@
+<items gfxroot="gfx/items/" version="1">
+  <active description="Forbidden knowledge" gfx="heretical-grimoire.png" name="Heretical Grimoire" quality="4" chargetype="normal" maxcharges="1"/>
+</items>

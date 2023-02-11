@@ -1,21 +1,24 @@
-import { ModCallback } from "isaac-typescript-definitions";
+import {ModUpgraded} from "isaacscript-common";
+import {PostRenderInit} from "./mod/callback/CallbackPostRender";
+import {PostPerfectUpdateInit} from "./mod/callback/CallbackPostPerfectUpdate";
+import {PostUseItemInit} from "./mod/callback/CallbackPostUseItem";
+import {PrePickupCollision} from "./mod/callback/CallbackPrePickupCollision";
+import {mod, MOD_NAME} from "./Mod";
+import {PostPlayerCollectibleAdded} from "./mod/callback/CallbackPostPlayerCollectibleAdded";
 
-const MOD_NAME = "wizardry-boi";
 
 main();
 
 function main() {
-  // Instantiate a new mod object, which grants the ability to add callback functions that
-  // correspond to in-game events.
-  const mod = RegisterMod(MOD_NAME, 1);
-
-  // Register a callback function that corresponds to when a new run is started.
-  mod.AddCallback(ModCallback.POST_GAME_STARTED, postGameStarted);
-
-  // Print a message to the "log.txt" file.
+  registerCallbacks(mod);
   Isaac.DebugString(`${MOD_NAME} initialized.`);
 }
 
-function postGameStarted() {
-  Isaac.DebugString("Callback fired: POST_GAME_STARTED");
+function registerCallbacks(mod: ModUpgraded) {
+  PostPerfectUpdateInit(mod);
+  PostUseItemInit(mod);
+  PostRenderInit(mod);
+  PrePickupCollision(mod);
+  PostPlayerCollectibleAdded(mod);
 }
+
