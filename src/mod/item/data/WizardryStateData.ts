@@ -7,7 +7,8 @@ import {RuneSlot} from "../rune/RuneSlot";
 import {SpellParams} from "../spells/SpellParams";
 import {RechargeWizardryItem} from "../behaviour/RechargeWizardryItem";
 import {mod} from "../../../Mod";
-import {CancelCompletableFuture} from "../../helper/CompletableFuture";
+import {CancelCompletableFuture, CreateRandomKey} from "../../helper/CompletableFuture";
+import {startSpellCastingAudio} from "../sound/SpellSoundManager";
 
 export class WizardryStateData {
 
@@ -27,13 +28,19 @@ export class WizardryStateData {
         return this.runeHandler.getActiveSpell();
     }
 
-    public setActiveSpell(spell: ISpell): void {
+    public setActiveSpell(spell: ISpell | undefined): void {
         this.runeHandler.setActiveSpell(spell);
     }
 
+    public resetState() {
+        EnableAllKeys(this.player)
+        this.setActiveSpell(undefined);
+        RechargeWizardryItem(this.player)
+    }
 
     public ActivateCasting(rng: RNG): void {
-        this.lastCompletableFutureKey = (getRandom(rng) + 1).toString(36).substring(7);
+        this.lastCompletableFutureKey = CreateRandomKey(rng);
+        startSpellCastingAudio(this.player, rng, this);
         DisableArrowKeys(this.player)
         this.castingSpell = true;
         Flog(`Started Casting spell! Future key: ${this.lastCompletableFutureKey}`);
@@ -51,7 +58,7 @@ export class WizardryStateData {
             const runes = this.runeHandler.flushCurrentlyCastRunes();
             mod.runInNGameFrames(() => {
                 EnableAllKeys(this.player)
-            }, 10, false);
+            }, 5, false);
             Flog(`Stopped casting spell! [${runes.map(value => RuneSlot[value]).join(",")}]`);
         }
 

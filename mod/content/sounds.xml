@@ -1,0 +1,8 @@
+<sounds root="sounds/">
+    <sound name="WizardrySpellCountdownClicks">
+        <sample weight="1" path="Click1.wav"/>
+        <sample weight="1" path="Click2.wav"/>
+        <sample weight="1" path="Click3.wav"/>
+        <sample weight="1" path="Click4.wav"/>
+    </sound>
+</sounds>

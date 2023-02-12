@@ -1,12 +1,17 @@
 import {CreateCompletableFuture} from "../../helper/CompletableFuture";
 import {RechargeWizardryItem} from "./RechargeWizardryItem";
 import {FlushPlayerStateData, GetWizardryStateData} from "../data/WizardryStateDataCache";
-import {logError} from "isaacscript-common";
+import {logError, newChargeBarSprites, renderChargeBar} from "isaacscript-common";
 import {Flog} from "../../helper/CustomLogger";
 
 export function PostUseWizardryItem(player: EntityPlayer, rng: RNG): void {
     const state = GetWizardryStateData(player);
     state.ActivateCasting(rng);
+
+
+    // charge bar tests
+
+
     const futureKey = state.getLastCompletableFutureKey();
     CreateCompletableFuture(4, futureKey,() => {
         resetPlayerState(player, futureKey);

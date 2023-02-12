@@ -1,10 +1,15 @@
-import {getPlayers, isActionTriggered, isShootActionTriggered} from "isaacscript-common";
+import {game, getPlayers, isActionTriggered, isShootActionTriggered} from "isaacscript-common";
 import {PlayerHasWizardryItem} from "../../helper/ItemHelper";
 import {ButtonAction} from "isaac-typescript-definitions";
 import {GetWizardryStateData} from "../data/WizardryStateDataCache";
 import {RuneSlot} from "./RuneSlot";
 
 export function wizardryHandleInput() : void {
+
+    if(game.IsPaused()) {
+        return;
+    }
+
     const realPlayers = getPlayers();
     for (const player of realPlayers) {
         if (PlayerHasWizardryItem(player)) {

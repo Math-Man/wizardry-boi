@@ -1,11 +1,11 @@
 import {RuneSlot} from "./RuneSlot";
 import {Flog} from "../../helper/CustomLogger";
-import {EntityType} from "isaac-typescript-definitions";
+import {EntityFlag, EntityType} from "isaac-typescript-definitions";
 import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
 import {ISpell} from "../spells/ISpell";
 import {CAST_RUNE_LIMIT} from "../data/WizardryConstants";
-import {DummySpell} from "../spells/DummySpell";
+import {KillAllSpell} from "../spells/KillAllSpell";
 
 export class WizardrySpellHandler {
 
@@ -39,7 +39,10 @@ export class WizardrySpellHandler {
         }
 
         Flog(`Rune cast: ${RuneSlot[slotCast]}`)
+
+
         const spawnedEntity = Isaac.Spawn(EntityType.EFFECT, CustomEntitiesEffects.WIZ_HERETICAL_RUNE, 0, this.player.Position, Vector(0, 0), this.player)
+        spawnedEntity.AddEntityFlags(EntityFlag.PERSISTENT);
         spawnedEntity.GetSprite().Play(`rune${slotCast+1}`, true);
 
 
@@ -53,7 +56,7 @@ export class WizardrySpellHandler {
         // If the number of runes cast has reached limit with the last cast, assign the relevant spell.
         if(this.getNumberOfRunesCast() >= CAST_RUNE_LIMIT) {
             // TODO: The spell decider service usage goes here.
-            this.setActiveSpell(new DummySpell());
+            this.setActiveSpell(new KillAllSpell());
         }
     }
 

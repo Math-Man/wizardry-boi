@@ -9,6 +9,7 @@ const ISC_FEATURES = [
     ISCFeature.SAVE_DATA_MANAGER,
     ISCFeature.SPAWN_COLLECTIBLE,
     ISCFeature.DISABLE_INPUTS,
+    ISCFeature.PERSISTENT_ENTITIES
 ] as const;
 
 const CUSTOM_CALLBACKS_USED = [

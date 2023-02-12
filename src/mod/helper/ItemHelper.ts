@@ -28,11 +28,11 @@ export function GetWizardryItemActiveSlot(player: EntityPlayer): number {
 
 
 export function DisableArrowKeys(player: EntityPlayer) {
-    Flog(`Disabling arrow keys for player ${player.Index}`)
+    Flog(`Disabling arrow keys for player ${player.ControllerIndex}`)
     mod.disableShootingInputs(MOD_FEATURE);
 }
 
 export function EnableAllKeys(player: EntityPlayer) {
-    Flog(`Enabling all keys for player ${player.Index}`)
+    Flog(`Enabling all keys for player ${player.ControllerIndex}`)
     mod.enableAllInputs(MOD_FEATURE);
 }
