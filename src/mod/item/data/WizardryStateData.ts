@@ -1,22 +1,26 @@
 import {WizardrySpellHandler} from "../rune/WizardrySpellHandler";
 import {ISpell} from "../spells/ISpell";
-import {logError} from "isaacscript-common";
+import {getRandom, logError, newRNG} from "isaacscript-common";
 import {DisableArrowKeys, EnableAllKeys} from "../../helper/ItemHelper";
 import {Flog} from "../../helper/CustomLogger";
 import {RuneSlot} from "../rune/RuneSlot";
 import {SpellParams} from "../spells/SpellParams";
+import {RechargeWizardryItem} from "../behaviour/RechargeWizardryItem";
+import {mod} from "../../../Mod";
+import {CancelCompletableFuture} from "../../helper/CompletableFuture";
 
 export class WizardryStateData {
 
     public player: EntityPlayer;
     public castingSpell: boolean;
     public runeHandler: WizardrySpellHandler;
-
+    private lastCompletableFutureKey: string | undefined;
 
     public constructor(player: EntityPlayer, runeHandler: WizardrySpellHandler) {
         this.castingSpell = false;
         this.runeHandler = runeHandler;
         this.player = player;
+        this.lastCompletableFutureKey = undefined;
     }
 
     public getActiveSpell(): ISpell | undefined {
@@ -28,9 +32,11 @@ export class WizardryStateData {
     }
 
 
-    public ActivateCasting(): void {
+    public ActivateCasting(rng: RNG): void {
+        this.lastCompletableFutureKey = (getRandom(rng) + 1).toString(36).substring(7);
         DisableArrowKeys(this.player)
-        Flog(`Started Casting spell!`);
+        this.castingSpell = true;
+        Flog(`Started Casting spell! Future key: ${this.lastCompletableFutureKey}`);
     }
 
     public DeactivateCasting(): boolean {
@@ -43,13 +49,23 @@ export class WizardryStateData {
         if (!this.getActiveSpell()) {
             this.castingSpell = false;
             const runes = this.runeHandler.flushCurrentlyCastRunes();
-            EnableAllKeys(this.player)
+            mod.runInNGameFrames(() => {
+                EnableAllKeys(this.player)
+            }, 10, false);
             Flog(`Stopped casting spell! [${runes.map(value => RuneSlot[value]).join(",")}]`);
         }
 
+        Flog(`Canceling future: ${this.lastCompletableFutureKey}`)
+        CancelCompletableFuture(this.lastCompletableFutureKey);
+        RechargeWizardryItem(this.player)
         return true;
     }
 
+    /**
+     * Casts the spell, modifies the related cached fields.
+     * Does not take the player out of casting state, it should be done manually.
+     * @param extraParams
+     */
     public castActiveSpell(extraParams: unknown[]): void {
         const spell = this.runeHandler.getActiveSpell();
         if(!spell) {
@@ -67,10 +83,15 @@ export class WizardryStateData {
         // Remove it
         this.runeHandler.setActiveSpell(undefined)
 
-        // De-activate spell-casting state
-        // this.DeactivateCasting();
+        // mod.runNextRenderFrame(() => {
+        //     RechargeWizardryItem(this.player);
+        // }, false)
     }
 
+
+    public getLastCompletableFutureKey() : string | undefined{
+        return this.lastCompletableFutureKey;
+    }
 
 
     public ToString(): string {

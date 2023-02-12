@@ -5,6 +5,8 @@ import {SpellParams} from "./SpellParams";
 export abstract class AreaSpell implements ISpell {
 
     public abstract cast(params: SpellParams): void
-    public abstract getType(): SpellType
+    public getType(): SpellType {
+        return SpellType.AREA;
+    }
 
 }

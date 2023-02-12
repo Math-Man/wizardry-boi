@@ -4,7 +4,7 @@ import {Flog} from "../../helper/CustomLogger";
 
 export function RechargeWizardryItem(player: EntityPlayer): void {
     const slot = GetWizardryItemActiveSlot(player);
-    Flog(`SLOT: ${slot}`)
+    Flog(`RECHARGING ITEM IN SLOT: ${slot}`)
     if(slot >= 0) {
         addCharge(player, slot, 1, true);
     } else {

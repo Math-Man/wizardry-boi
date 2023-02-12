@@ -1,22 +1,39 @@
-import {WizardrySetCastTimer} from "./WizardryCastTimer";
+import {CreateCompletableFuture} from "../../helper/CompletableFuture";
 import {RechargeWizardryItem} from "./RechargeWizardryItem";
 import {FlushPlayerStateData, GetWizardryStateData} from "../data/WizardryStateDataCache";
 import {logError} from "isaacscript-common";
+import {Flog} from "../../helper/CustomLogger";
 
-export function PostUseWizardryItem(player: EntityPlayer): void {
-    GetWizardryStateData(player).ActivateCasting();
-
-    WizardrySetCastTimer(player, 4, () => {
-        const state = GetWizardryStateData(player);
-        if(state) {
-            if(state.DeactivateCasting()) {
-                FlushPlayerStateData(player);
-                return;
-            }
-            RechargeWizardryItem(player)
-        } else {
-            logError(`Player's wizardry state gone missing during casting period.`)
-        }
+export function PostUseWizardryItem(player: EntityPlayer, rng: RNG): void {
+    const state = GetWizardryStateData(player);
+    state.ActivateCasting(rng);
+    const futureKey = state.getLastCompletableFutureKey();
+    CreateCompletableFuture(4, futureKey,() => {
+        resetPlayerState(player, futureKey);
+    }, () => {
+        cancelPlayerState(player, futureKey);
     });
 
+}
+
+
+function resetPlayerState(player: EntityPlayer, key: unknown) : void {
+    const state = GetWizardryStateData(player);
+    if(state !== undefined) {
+        if(state.getActiveSpell() !== undefined) {
+            return;
+        }
+
+        if(state.DeactivateCasting()) {
+            FlushPlayerStateData(player);
+            return;
+        }
+        RechargeWizardryItem(player)
+    } else {
+        logError(`Player's wizardry state gone missing during casting period.`)
+    }
+}
+
+function cancelPlayerState(player: EntityPlayer, key: unknown) : void {
+    Flog(`Canceled player state flush. ${key}`);
 }

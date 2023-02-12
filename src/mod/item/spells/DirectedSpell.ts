@@ -5,6 +5,8 @@ import {SpellParams} from "./SpellParams";
 export abstract class DirectedSpell implements ISpell {
 
     public abstract cast(params: SpellParams): void
-    public abstract getType(): SpellType
+    public getType(): SpellType {
+        return SpellType.DIRECTED;
+    }
 
 }

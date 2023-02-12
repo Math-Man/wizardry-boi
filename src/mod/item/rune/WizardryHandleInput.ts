@@ -1,4 +1,4 @@
-import {getPlayers, isActionTriggered} from "isaacscript-common";
+import {getPlayers, isActionTriggered, isShootActionTriggered} from "isaacscript-common";
 import {PlayerHasWizardryItem} from "../../helper/ItemHelper";
 import {ButtonAction} from "isaac-typescript-definitions";
 import {GetWizardryStateData} from "../data/WizardryStateDataCache";
@@ -9,6 +9,14 @@ export function wizardryHandleInput() : void {
     for (const player of realPlayers) {
         if (PlayerHasWizardryItem(player)) {
             const playerStateData = GetWizardryStateData(player);
+            const activeSpell = playerStateData.getActiveSpell();
+
+            if(isShootActionTriggered(player.ControllerIndex) && activeSpell !== undefined) {
+                playerStateData.castActiveSpell([]);
+                playerStateData.DeactivateCasting();
+                return;
+            }
+
             if(playerStateData.castingSpell) {
                 if(isActionTriggered(player.ControllerIndex, ButtonAction.SHOOT_DOWN)) {
                     playerStateData.runeHandler.CastRune(RuneSlot.DOWN);

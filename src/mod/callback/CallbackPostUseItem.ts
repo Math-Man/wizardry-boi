@@ -13,7 +13,7 @@ function main(collectibleType: CollectibleType, rng : RNG, player: EntityPlayer,
 
     if(collectibleType === CollectibleTypeCustom.WIZ_HERETICAL_GRIMOIRE) {
         Flog(`POST: ${collectibleType}, ${rng}, ${player}, ${userFlags}, ${activeSlot}, ${customData}`)
-        PostUseWizardryItem(player);
+        PostUseWizardryItem(player, rng);
     }
 
     return undefined;

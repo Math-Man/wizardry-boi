@@ -1,0 +1,1 @@
+export const CAST_RUNE_LIMIT = 4;

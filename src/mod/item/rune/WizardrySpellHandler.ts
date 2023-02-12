@@ -4,6 +4,8 @@ import {EntityType} from "isaac-typescript-definitions";
 import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
 import {ISpell} from "../spells/ISpell";
+import {CAST_RUNE_LIMIT} from "../data/WizardryConstants";
+import {DummySpell} from "../spells/DummySpell";
 
 export class WizardrySpellHandler {
 
@@ -29,8 +31,13 @@ export class WizardrySpellHandler {
         this.currentSpell = spell;
     }
 
-
     public CastRune(slotCast: RuneSlot): void {
+
+        // If the number of runes cast is at cap, don't cast it.
+        if(this.getNumberOfRunesCast() >= CAST_RUNE_LIMIT) {
+            return;
+        }
+
         Flog(`Rune cast: ${RuneSlot[slotCast]}`)
         const spawnedEntity = Isaac.Spawn(EntityType.EFFECT, CustomEntitiesEffects.WIZ_HERETICAL_RUNE, 0, this.player.Position, Vector(0, 0), this.player)
         spawnedEntity.GetSprite().Play(`rune${slotCast+1}`, true);
@@ -42,11 +49,23 @@ export class WizardrySpellHandler {
             this.player,
             slotCast
         ));
+
+        // If the number of runes cast has reached limit with the last cast, assign the relevant spell.
+        if(this.getNumberOfRunesCast() >= CAST_RUNE_LIMIT) {
+            // TODO: The spell decider service usage goes here.
+            this.setActiveSpell(new DummySpell());
+        }
     }
 
     public getCurrentlyCastRuneEntities() : Array<HereticalRuneEntity> {
         return this.currentCastRunesEntities;
     }
+
+    public getNumberOfRunesCast(): number {
+        return this.getCurrentlyCastRuneEntities().length;
+    }
+
+
 
     /**
      * Clears the cast runes, deletes the rune entities and clears the array.
