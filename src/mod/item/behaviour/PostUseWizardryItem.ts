@@ -13,7 +13,7 @@ export function PostUseWizardryItem(player: EntityPlayer, rng: RNG): void {
 
 
     const futureKey = state.getLastCompletableFutureKey();
-    CreateCompletableFuture(4, futureKey,() => {
+    CreateCompletableFuture(4000, futureKey,() => {
         resetPlayerState(player, futureKey);
     }, () => {
         cancelPlayerState(player, futureKey);

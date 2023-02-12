@@ -1,11 +1,11 @@
-import {GAME_FRAMES_PER_SECOND, getRandom, logError} from "isaacscript-common";
+import {GAME_FRAMES_PER_SECOND, getRandom, getRandomSeed, logError, newRNG} from "isaacscript-common";
 import {mod} from "../../Mod";
 import {Flog} from "./CustomLogger";
 
 
 const completableFutureTracker = new Map<unknown, () => void>();
 
-export function CreateCompletableFuture(castTimeSeconds: int, key: unknown, func: () => void, onFail?: () => void): void {
+export function CreateCompletableFuture(castTimeMillis: int, key: unknown, func: () => void, onFail?: () => void): void {
     if(key === undefined) {
         logError(`Can't register completable cast timer future with undefined key!`)
         return;
@@ -14,7 +14,7 @@ export function CreateCompletableFuture(castTimeSeconds: int, key: unknown, func
     const future = () => CompletableFutureWrapper(key, func, (onFail ? onFail : () => {}));
     completableFutureTracker.set(key, future);
     Flog(`Registering future with key: ${key}`)
-    mod.runInNGameFrames(future, (castTimeSeconds * GAME_FRAMES_PER_SECOND), false)
+    mod.runInNGameFrames(future, (castTimeMillis / 1000 * GAME_FRAMES_PER_SECOND), false)
 }
 
 function CompletableFutureWrapper(key: unknown, func: () => void, onFail: () => void): void {
@@ -39,4 +39,8 @@ export function CancelCompletableFuture(key: unknown): boolean {
 
 export function CreateRandomKey(rng: RNG): string {
     return (getRandom(rng) + 1).toString(36).substring(7)
+}
+
+export function CreateRandomKeyWithGeneratedRNG(): string {
+    return (getRandom(newRNG(getRandomSeed())) + 1).toString(36).substring(7)
 }

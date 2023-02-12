@@ -5,7 +5,7 @@ import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
 import {ISpell} from "../spells/ISpell";
 import {CAST_RUNE_LIMIT} from "../data/WizardryConstants";
-import {KillAllSpell} from "../spells/KillAllSpell";
+import {NailStorm} from "../spells/concrete/FireTear";
 
 export class WizardrySpellHandler {
 
@@ -56,7 +56,7 @@ export class WizardrySpellHandler {
         // If the number of runes cast has reached limit with the last cast, assign the relevant spell.
         if(this.getNumberOfRunesCast() >= CAST_RUNE_LIMIT) {
             // TODO: The spell decider service usage goes here.
-            this.setActiveSpell(new KillAllSpell());
+            this.setActiveSpell(new NailStorm());
         }
     }
 

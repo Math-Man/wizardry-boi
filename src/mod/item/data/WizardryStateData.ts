@@ -1,10 +1,10 @@
 import {WizardrySpellHandler} from "../rune/WizardrySpellHandler";
 import {ISpell} from "../spells/ISpell";
-import {getRandom, logError, newRNG} from "isaacscript-common";
+import {logError} from "isaacscript-common";
 import {DisableArrowKeys, EnableAllKeys} from "../../helper/ItemHelper";
 import {Flog} from "../../helper/CustomLogger";
 import {RuneSlot} from "../rune/RuneSlot";
-import {SpellParams} from "../spells/SpellParams";
+import {SpellParams} from "../spells/data/SpellParams";
 import {RechargeWizardryItem} from "../behaviour/RechargeWizardryItem";
 import {mod} from "../../../Mod";
 import {CancelCompletableFuture, CreateRandomKey} from "../../helper/CompletableFuture";
@@ -85,7 +85,7 @@ export class WizardryStateData {
             player: this.player,
             extraParams: extraParams
         } as SpellParams
-        spell.cast(params);
+        spell.cast(this.player, params);
 
         // Remove it
         this.runeHandler.setActiveSpell(undefined)
