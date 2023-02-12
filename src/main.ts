@@ -6,7 +6,6 @@ import {PrePickupCollision} from "./mod/callback/CallbackPrePickupCollision";
 import {mod, MOD_NAME} from "./Mod";
 import {PostPlayerCollectibleAdded} from "./mod/callback/CallbackPostPlayerCollectibleAdded";
 import {PostPlayerCollectibleRemoved} from "./mod/callback/CallbackPostPlayerCollectibleRemoved";
-import {PostPlayerInputAction} from "./mod/callback/CallbackInputActionPlayer";
 
 
 main();
@@ -23,6 +22,5 @@ function registerCallbacks(mod: ModUpgraded) {
   PrePickupCollision(mod);
   PostPlayerCollectibleAdded(mod);
   PostPlayerCollectibleRemoved(mod);
-  // PostPlayerInputAction(mod);
 }
 

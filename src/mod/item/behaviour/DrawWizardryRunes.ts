@@ -12,11 +12,10 @@ export function DrawWizardryRunes() {
         const playerStateData = GetWizardryStateData(player);
         for (const currentlyCastRuneEntity of playerStateData.runeHandler.getCurrentlyCastRuneEntities()) {
             const runeFrame =  currentlyCastRuneEntity.getGameEntity().FrameCount;
-            const runePosition = Vector(
+            currentlyCastRuneEntity.getGameEntity().Position = Vector(
                 currentlyCastRuneEntity.getCaster().Position.X + Math.sin((runeFrame % (360 * 2)) / (Math.PI * 2)) * 32,
                 (currentlyCastRuneEntity.getCaster().Position.Y - 16) + Math.cos((runeFrame % (360 * 2)) / (Math.PI * 2)) * 32
             );
-            currentlyCastRuneEntity.getGameEntity().Position = runePosition;
         }
 
     }

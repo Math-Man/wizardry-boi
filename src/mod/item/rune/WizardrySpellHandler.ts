@@ -7,7 +7,6 @@ import {ISpell} from "../spells/ISpell";
 
 export class WizardrySpellHandler {
 
-    private readonly currentCastRunes : Array<RuneSlot>;
     private readonly currentCastRunesEntities : Array<HereticalRuneEntity>;
     private readonly player: EntityPlayer;
 
@@ -17,7 +16,6 @@ export class WizardrySpellHandler {
     private currentSpell: ISpell | undefined;
 
     public constructor(player: EntityPlayer) {
-        this.currentCastRunes = [];
         this.currentCastRunesEntities = [];
         this.player = player
     }
@@ -33,8 +31,7 @@ export class WizardrySpellHandler {
 
 
     public CastRune(slotCast: RuneSlot): void {
-        Flog(`Rune cast: ${RuneSlot[slotCast]} current: ${this.currentCastRunes}`)
-        this.currentCastRunes.push(slotCast)
+        Flog(`Rune cast: ${RuneSlot[slotCast]}`)
         const spawnedEntity = Isaac.Spawn(EntityType.EFFECT, CustomEntitiesEffects.WIZ_HERETICAL_RUNE, 0, this.player.Position, Vector(0, 0), this.player)
         spawnedEntity.GetSprite().Play(`rune${slotCast+1}`, true);
 
@@ -50,9 +47,6 @@ export class WizardrySpellHandler {
     public getCurrentlyCastRuneEntities() : Array<HereticalRuneEntity> {
         return this.currentCastRunesEntities;
     }
-    public getCurrentlyCastRunes() : Array<RuneSlot> {
-        return this.currentCastRunes;
-    }
 
     /**
      * Clears the cast runes, deletes the rune entities and clears the array.
@@ -63,8 +57,8 @@ export class WizardrySpellHandler {
         this.currentCastRunesEntities.forEach(runeEntity => {
             runeEntity.getGameEntity().Remove()
         })
-        this.currentCastRunesEntities.splice(0, this.currentCastRunesEntities.length);
-        return this.currentCastRunes.splice(0, this.currentCastRunes.length);
+        const runeEntities = this.currentCastRunesEntities.splice(0, this.currentCastRunesEntities.length);
+        return runeEntities.map(value => value.getSlotType());
     }
 
 }
