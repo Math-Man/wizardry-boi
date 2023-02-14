@@ -1,4 +1,4 @@
 export interface SpellParams {
-    player: EntityPlayer;
+    caster: EntityPlayer;
     extraParams: unknown[]
 }

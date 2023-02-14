@@ -5,7 +5,7 @@ import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
 import {ISpell} from "../spells/ISpell";
 import {CAST_RUNE_LIMIT} from "../data/WizardryConstants";
-import {NailStorm} from "../spells/concrete/FireTear";
+import {NailStorm} from "../spells/concrete/NailStorm";
 
 export class WizardrySpellHandler {
 

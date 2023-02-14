@@ -82,10 +82,10 @@ export class WizardryStateData {
 
         // Cast the spell
         const params = {
-            player: this.player,
+            caster: this.player,
             extraParams: extraParams
         } as SpellParams
-        spell.cast(this.player, params);
+        spell.cast(params);
 
         // Remove it
         this.runeHandler.setActiveSpell(undefined)

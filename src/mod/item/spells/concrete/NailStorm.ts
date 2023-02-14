@@ -1,15 +1,13 @@
 import {DirectedSpell} from "../DirectedSpell";
 import {SpellParams} from "../data/SpellParams";
 import {getNPCs, getRandomSeed, newRNG, spawnTear} from "isaacscript-common";
-import {TearVariant} from "isaac-typescript-definitions";
-import {
-    CreateCompletableFuture,
-    CreateRandomKey,
-} from "../../../helper/CompletableFuture";
+import {TearFlag, TearVariant} from "isaac-typescript-definitions";
+import {CreateCompletableFuture, CreateRandomKey,} from "../../../helper/CompletableFuture";
+import {SpellQuality} from "../data/SpellQuality";
 
 export class NailStorm extends DirectedSpell {
 
-    cast(caster: EntityPlayer, params: SpellParams): void {
+    cast(params: SpellParams): void {
 
         const rng = newRNG(getRandomSeed())
 
@@ -19,7 +17,7 @@ export class NailStorm extends DirectedSpell {
         for (let i = 0; i < 10; i++) {
             CreateCompletableFuture(50 * i,
                 CreateRandomKey(rng),
-                () => this.SpawnTargetedTear(caster, rng, targets));
+                () => this.SpawnTargetedTear(params.caster, rng, targets));
         }
 
     }
@@ -29,15 +27,38 @@ export class NailStorm extends DirectedSpell {
 
             const targetPosition = (enemy.Position.sub(caster.Position).Normalized())
                 .Resized(20)
-                .add(Vector((rng.RandomFloat()), (rng.RandomFloat())));
-            spawnTear(
+                .add(Vector((rng.RandomFloat()*5), (rng.RandomFloat()*5)));
+            const spawnedTear = spawnTear(
                 TearVariant.NAIL,
                 0,
                 caster.Position,
                 (targetPosition),
                 caster
             );
+
+            spawnedTear.AddTearFlags(TearFlag.SPLIT)
+
         });
+    }
+
+    getFlavorTextTitle(): string {
+        return "Nail Storm";
+    }
+
+    getFlavorTextDescription(): string {
+        return "Bite them until they are lame!";
+    }
+
+    getFluxCost(): number {
+        return 1;
+    }
+
+    getMappingName(): string {
+        return "NAIL_STORM";
+    }
+
+    getSpellQuality(): SpellQuality {
+        return SpellQuality.GOOD;
     }
 
 }
