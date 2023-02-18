@@ -17,6 +17,7 @@ export class WizardryStateData {
     public runeHandler: WizardrySpellHandler;
     private lastCompletableFutureKey: string | undefined;
 
+
     public constructor(player: EntityPlayer, runeHandler: WizardrySpellHandler) {
         this.castingSpell = false;
         this.runeHandler = runeHandler;

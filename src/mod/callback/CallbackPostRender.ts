@@ -10,6 +10,5 @@ export function PostRenderInit(mod: ModUpgraded): void {
 function main(): void {
     // TODO: Not sure if handling input on post render is correct...
     wizardryHandleInput();
-
     DrawWizardryRunes();
 }

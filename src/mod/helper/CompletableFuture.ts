@@ -13,18 +13,18 @@ export function CreateCompletableFuture(castTimeMillis: int, key: unknown, func:
 
     const future = () => CompletableFutureWrapper(key, func, (onFail ? onFail : () => {}));
     completableFutureTracker.set(key, future);
-    Flog(`Registering future with key: ${key}`)
+    // Flog(`Registering future with key: ${key}`)
     mod.runInNGameFrames(future, (castTimeMillis / 1000 * GAME_FRAMES_PER_SECOND), false)
 }
 
 function CompletableFutureWrapper(key: unknown, func: () => void, onFail: () => void): void {
-    Flog(`CURRENT FEATURES: ${Array.from(completableFutureTracker.keys()).join(", ")}`)
+    // Flog(`CURRENT FEATURES: ${Array.from(completableFutureTracker.keys()).join(", ")}`)
     if(completableFutureTracker.has(key)) {
         func();
-        Flog(`Execution success for completable future for key: ${key}`);
+       // Flog(`Execution success for completable future for key: ${key}`);
     } else {
         onFail();
-        Flog(`Execution canceled for completable future for key: ${key}`);
+        // Flog(`Execution canceled for completable future for key: ${key}`);
     }
     completableFutureTracker.delete(key);
 }

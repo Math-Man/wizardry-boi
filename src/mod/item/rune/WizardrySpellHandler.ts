@@ -1,16 +1,19 @@
 import {RuneSlot} from "./RuneSlot";
 import {Flog} from "../../helper/CustomLogger";
-import {EntityFlag, EntityType} from "isaac-typescript-definitions";
+import {CollectibleType, EntityFlag, EntityType} from "isaac-typescript-definitions";
 import {CustomEntitiesEffects} from "../../enum/CustomEntities";
 import {HereticalRuneEntity} from "./HereticalRuneEntity";
 import {ISpell} from "../spells/ISpell";
 import {CAST_RUNE_LIMIT} from "../data/WizardryConstants";
-import {NailStorm} from "../spells/concrete/NailStorm";
+import {getNextSpell} from "../spells/service/SpellMapper";
+
+
 
 export class WizardrySpellHandler {
 
     private readonly currentCastRunesEntities : Array<HereticalRuneEntity>;
     private readonly player: EntityPlayer;
+    public shouldDisplaySpellText: boolean;
 
     /**
      * If player has successfully cast a spell, this value is set
@@ -20,6 +23,7 @@ export class WizardrySpellHandler {
     public constructor(player: EntityPlayer) {
         this.currentCastRunesEntities = [];
         this.player = player
+        this.shouldDisplaySpellText = false;
     }
 
 
@@ -27,8 +31,13 @@ export class WizardrySpellHandler {
         return this.currentSpell;
     }
 
+    public setShouldDisplaySpellText(shouldDisplay: boolean): void {
+        this.shouldDisplaySpellText = shouldDisplay;
+    }
+
     public setActiveSpell(spell: ISpell | undefined): void {
         this.currentSpell = spell;
+        this.shouldDisplaySpellText = true;
     }
 
     public CastRune(slotCast: RuneSlot): void {
@@ -56,7 +65,20 @@ export class WizardrySpellHandler {
         // If the number of runes cast has reached limit with the last cast, assign the relevant spell.
         if(this.getNumberOfRunesCast() >= CAST_RUNE_LIMIT) {
             // TODO: The spell decider service usage goes here.
-            this.setActiveSpell(new NailStorm());
+            const nextSpell = getNextSpell(this.currentCastRunesEntities, this.player);
+            this.setActiveSpell(nextSpell);
+
+
+            // game.GetHUD().ShowItemText(nextSpell.getFlavorTextTitle(), nextSpell.getFlavorTextDescription(), false);
+            // game.GetHUD().ShowFortuneText(nextSpell.getFlavorTextTitle(), nextSpell.getFlavorTextDescription());
+            // game.GetHUD().PostUpdate()
+
+
+            // const ic = itemConfig.GetCollectible(CollectibleType.INNER_EYE)
+            // if(ic) {
+            //     game.GetHUD().ShowItemText(this.player, ic);
+            // }
+
         }
     }
 

@@ -1,8 +1,11 @@
 export enum SpellQuality {
+    INVALID,
     TERRIBLE,
     BAD,
     NEUTRAL,
     GOOD,
     GREAT,
-    PERFECT
+    PERFECT,
+    GODLY,
+    CHEAT
 }
