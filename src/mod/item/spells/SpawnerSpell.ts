@@ -1,9 +1,8 @@
 import {SpellType} from "./data/SpellType";
 import {AbstractSpellBase} from "./AbstractSpellBase";
 
-export abstract class SelfSpell extends AbstractSpellBase {
+export abstract class SpawnerSpell extends AbstractSpellBase {
     public getType(): SpellType {
-        return SpellType.SELF;
+        return SpellType.SPAWNER;
     }
-
 }

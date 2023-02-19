@@ -4,6 +4,8 @@ import {getNPCs} from "isaacscript-common";
 import {SpellQuality} from "../data/SpellQuality";
 
 export class KillAllSpell extends AreaSpell {
+
+
     cast(params: SpellParams): void {
         getNPCs(undefined, undefined, undefined, true)
             .filter(enemy => enemy.IsVulnerableEnemy())

@@ -1,11 +1,10 @@
-import {AreaSpell} from "../AreaSpell";
 import {SpellParams} from "../data/SpellParams";
-import {getNPCs} from "isaacscript-common";
 import {SpellQuality} from "../data/SpellQuality";
 import {SelfSpell} from "../SelfSpell";
 import {Flog} from "../../../helper/CustomLogger";
 
 export class EmptySpell extends SelfSpell {
+
     cast(params: SpellParams): void {
         Flog("Spell fizzles")
     }
